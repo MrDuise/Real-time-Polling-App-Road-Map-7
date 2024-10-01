@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script>
+        // Connect to WebSocket server
+        const stompClient = new StompJs.Client({
+            brokerURL: 'ws://localhost:8080/ws'
+        });
+
+        stompClient.onConnect = function (frame) {
+            //setConnected(true);
+            console.log('Connected: ' + frame);
+
+            // Subscribe to the "/topic/greeting" endpoint
+            stompClient.subscribe('/topic/greetings', (greeting) => {
+                alert(greeting.body)
+            });
+        };
+
+        function sendMessage() {
+            const message = document.getElementById("message").value;
+            stompClient.publish({
+                destination: "/app/hello",
+                body: message
+            });
+        }
+        stompClient.activate();
+    </script>
+</head>
+
+<body>
+    <h1>WebSocket Example</h1>
+    <input type="text" id="message" placeholder="Enter your message">
+    <button onclick="sendMessage()">Send</button>
+</body>
+
+</html>
